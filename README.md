@@ -9,6 +9,10 @@ A simple **command-line task manager** built using **Node.js** that lets you **a
 
 - Node.js installed
 - Terminal/Command Prompt access
+- Run this command in the root folder of this project.
+```bash
+npm link
+```
 
 ---
 
