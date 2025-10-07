@@ -28,7 +28,7 @@ task <command> <arguments>
 #### 1. Add a Task
 Add a new task to the task manager.
 ```bash
-task add "<task_name>"
+task add <task_name>
 ```
 
 #### 2. Delete a Task
