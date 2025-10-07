@@ -23,7 +23,7 @@ const operation = args[0]; // add, update, delete, list
 if(operation=="add"){
   const task=args[1];
   if(args.length!=2){
-    console.log("Usage: node app.js <add> <task>");
+    console.log("Usage: task <add> <task>");
     process.exit(1);
   }
   else{
@@ -47,7 +47,7 @@ if(operation=="add"){
 else if(operation=="delete"){
   const idToDelete=parseInt(args[1]);
   if(args.length!=2){
-    console.log("Usage: node app.js <delete> <id>");
+    console.log("Usage: task <delete> <id>");
     process.exit(1);
   }
   if(data.length==0){
@@ -62,7 +62,7 @@ else if(operation=="delete"){
 }
 else if(operation=="update"){
   if(args.length!=4){
-    console.log("Usage: node app.js <update> <id> <attribute> <data>");
+    console.log("Usage: task <update> <id> <attribute> <data>");
     process.exit(1);
   }
   const idToUpdate=parseInt(args[1]);
@@ -89,12 +89,12 @@ else if(operation=="update"){
 }
 else if(operation=="list"){
   if(args.length!=2){
-    console.log("Usage: node app.js <list> <all>|<done>|<todo>|<in-progress>");
+    console.log("Usage: task <list> <all>|<done>|<todo>|<in-progress>");
     process.exit(1);
   }
   const subcmd=args[1];
   let listTasks=[]
-  if(subcmd=="all") for(let tasks of data) listTasks.push(tasks.task);
+  if(subcmd=="all") for(let tasks of data) listTasks.push([tasks.id,tasks.task,tasks.status]);
   else if(subcmd=="done"){
     for(let tasks of data){
       if(tasks.status=="done"){
@@ -116,10 +116,14 @@ else if(operation=="list"){
       }
     }
   }
+  else{
+    console.log("Usage: task <list> <all>|<done>|<todo>|<in-progress>")
+    process.exit(1);
+  }
   console.log("Found",listTasks.length,"tasks!");
   for(let i of listTasks) console.log(i);
 }
 else{
-  console.log("Usage: node app.js <add>|<update>|<delete>|<list> <....>")
+  console.log("Usage: task <add>|<update>|<delete>|<list> <....>")
   process.exit(1);
 }
