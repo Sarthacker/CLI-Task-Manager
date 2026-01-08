@@ -5,7 +5,13 @@ const args = process.argv.slice(2);
 const fs=require('fs');
 
 const stats = fs.statSync("data.json");
+const chalk=require('chalk');
 
+const color_text=(color,text)=>{
+  if(color=="green") console.log(chalk.green(text));
+  if(color=="red") console.log(chalk.red(text));
+  if(color=="yellow") console.log(chalk.yellow(text));
+};
 
 let rawData;
 let data=[];
@@ -98,21 +104,21 @@ else if(operation=="list"){
   else if(subcmd=="done"){
     for(let tasks of data){
       if(tasks.status=="done"){
-        listTasks.push(tasks.task);
+        listTasks.push([tasks.id,tasks.task,tasks.status]);
       }
     }
   }
   else if(subcmd=="todo"){
     for(let tasks of data){
       if(tasks.status=="todo"){
-        listTasks.push(tasks.task);
+        listTasks.push([tasks.id,tasks.task,tasks.status]);
       }
     }
   }
   else if(subcmd=="in-progress"){
     for(let tasks of data){
       if(tasks.status=="in-progress"){
-        listTasks.push(tasks.task);
+        listTasks.push([tasks.id,tasks.task,tasks.status]);
       }
     }
   }
@@ -121,7 +127,13 @@ else if(operation=="list"){
     process.exit(1);
   }
   console.log("Found",listTasks.length,"tasks!");
-  for(let i of listTasks) console.log(i);
+  for(let i of listTasks){
+    let color;
+    if(i[2]=="done") color="green";
+    else if(i[2]=="todo") color="red";
+    else if(i[2]=="in-progress") color="yellow";
+    color_text(color,i);
+  }
 }
 else{
   console.log("Usage: task <add>|<update>|<delete>|<list> <....>")

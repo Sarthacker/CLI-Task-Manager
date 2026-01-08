@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "bin": {
     "task": "./app.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2"
   }
 }
