@@ -4,6 +4,9 @@
 const args = process.argv.slice(2);
 const fs=require('fs');
 
+if (!fs.existsSync("data.json")) {
+  fs.writeFileSync("data.json", "[]");
+}
 const stats = fs.statSync("data.json");
 const chalk=require('chalk');
 
