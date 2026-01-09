@@ -28,7 +28,7 @@ task <command> <arguments>
 #### 1. Add a Task
 Add a new task to the task manager.
 ```bash
-task add <task_name>
+task add <task_name> <priority:high,low,medium>
 ```
 
 #### 2. Delete a Task
@@ -37,17 +37,24 @@ Delete a task by its ID.
 task delete <task_id>
 ```
 
-#### 3. Update a Task
-Update a task attribute (task description or status) for a particular ID.
-```bash
-task update <id> <attribute> <new_value>
-```
-
-#### 4. List Tasks
+#### 3. List Tasks
 List tasks based on status or all tasks.
 ```bash
 task list <all|todo|in-progress|done>
 ```
+
+#### 4. Complete a Task
+Mark or unmark a task as completed for a particular ID.
+```bash
+task <done|todo> <id>
+```
+
+#### 5. Update a Task
+Update a task attribute (task description or prioriy) for a particular ID.
+```bash
+task update <id> <attribute> <new_value>
+```
+
 Examples
 ```bash
 task list all

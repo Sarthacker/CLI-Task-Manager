@@ -8,9 +8,26 @@ const stats = fs.statSync("data.json");
 const chalk=require('chalk');
 
 const color_text=(color,text)=>{
-  if(color=="green") console.log(chalk.green(text));
-  if(color=="red") console.log(chalk.red(text));
-  if(color=="yellow") console.log(chalk.yellow(text));
+  const colors = {
+    black: chalk.black,
+    red: chalk.red,
+    green: chalk.green,
+    yellow: chalk.yellow,
+    blue: chalk.blue,
+    magenta: chalk.magenta,
+    cyan: chalk.cyan,
+    white: chalk.white,
+    redBright: chalk.redBright,
+    greenBright: chalk.greenBright,
+    yellowBright: chalk.yellowBright,
+    blueBright: chalk.blueBright,
+    magentaBright: chalk.magentaBright,
+    cyanBright: chalk.cyanBright,
+    whiteBright: chalk.whiteBright
+  };
+  
+  if(colors[color]) console.log(colors[color](text));
+  else console.log(text);
 };
 
 let rawData;
@@ -28,8 +45,9 @@ const operation = args[0]; // add, update, delete, list
 
 if(operation=="add"){
   const task=args[1];
-  if(args.length!=2){
-    console.log("Usage: task <add> <task>");
+  const priority=args[2];
+  if(args.length!=3){
+    console.log("Usage: task <add> <task> <priority:high,medium,low>");
     process.exit(1);
   }
   else{
@@ -41,6 +59,7 @@ if(operation=="add"){
       id:id,
       task:task,
       status:"todo",
+      priority:priority,
       createdAt:formatted,
       updatedAt:null
     };
@@ -53,7 +72,7 @@ if(operation=="add"){
 else if(operation=="delete"){
   const idToDelete=parseInt(args[1]);
   if(args.length!=2){
-    console.log("Usage: task <delete> <id>");
+    console.log("Usage: task <delete> <task_id>");
     process.exit(1);
   }
   if(data.length==0){
@@ -68,7 +87,7 @@ else if(operation=="delete"){
 }
 else if(operation=="update"){
   if(args.length!=4){
-    console.log("Usage: task <update> <id> <attribute> <data>");
+    console.log("Usage: task <update> <task_id> <attribute> <data>");
     process.exit(1);
   }
   const idToUpdate=parseInt(args[1]);
@@ -100,25 +119,25 @@ else if(operation=="list"){
   }
   const subcmd=args[1];
   let listTasks=[]
-  if(subcmd=="all") for(let tasks of data) listTasks.push([tasks.id,tasks.task,tasks.status]);
+  if(subcmd=="all") for(let tasks of data) listTasks.push([tasks.id,tasks.task,tasks.status,tasks.priority]);
   else if(subcmd=="done"){
     for(let tasks of data){
       if(tasks.status=="done"){
-        listTasks.push([tasks.id,tasks.task,tasks.status]);
+        listTasks.push([tasks.id,tasks.task,tasks.status,tasks.priority]);
       }
     }
   }
   else if(subcmd=="todo"){
     for(let tasks of data){
       if(tasks.status=="todo"){
-        listTasks.push([tasks.id,tasks.task,tasks.status]);
+        listTasks.push([tasks.id,tasks.task,tasks.status,tasks.priority]);
       }
     }
   }
   else if(subcmd=="in-progress"){
     for(let tasks of data){
       if(tasks.status=="in-progress"){
-        listTasks.push([tasks.id,tasks.task,tasks.status]);
+        listTasks.push([tasks.id,tasks.task,tasks.status,tasks.priority]);
       }
     }
   }
@@ -130,12 +149,57 @@ else if(operation=="list"){
   for(let i of listTasks){
     let color;
     if(i[2]=="done") color="green";
-    else if(i[2]=="todo") color="red";
-    else if(i[2]=="in-progress") color="yellow";
+    else if(i[3]=="high") color="redBright";
+    else if(i[3]=="medium") color="yellow";
+    else if(i[3]=="low") color="cyan"
     color_text(color,i);
   }
 }
+else if(operation=="done"){
+  if(args.length!=2){
+    console.log("Usage: task <done> <task_id>");
+    process.exit(1);
+  }
+  else{
+    const task_id=parseInt(args[1]);
+    let updated=false;
+    data=data.map(task => {
+      if(task.id==task_id){
+        task.status="done";
+        updated=true;
+      }
+      return task;
+    });
+    if(updated){
+      fs.writeFileSync("data.json", JSON.stringify(data, null, 2)); 
+      console.log("Task with task id",task_id,"completed successfully!!");
+    }
+    else console.log("No such id found in the data!!");
+  }
+}
+else if(operation=="todo"){
+  if(args.length!=2){
+    console.log("Usage: task <todo> <task_id>");
+    process.exit(1);
+  }
+  else{
+    const task_id=parseInt(args[1]);
+    let updated=false;
+    data=data.map(task => {
+      if(task.id==task_id){
+        task.status="todo";
+        updated=true;
+      }
+      return task;
+    });
+    if(updated){
+      fs.writeFileSync("data.json", JSON.stringify(data, null, 2)); 
+      console.log("Status of the task with task id",task_id,"has been changed!!");
+    }
+    else console.log("No such id found in the data!!");
+  }
+}
 else{
-  console.log("Usage: task <add>|<update>|<delete>|<list> <....>")
+  console.log("Usage: task <add>|<update>|<delete>|<list>|<done>|<todo> <....>")
   process.exit(1);
 }
